@@ -90,6 +90,11 @@ add_service_files(
   NTSetRaw.srv
 )
 
+generate_messages(
+  DEPENDENCIES
+  std_msgs  # Or other packages containing msgs
+)
+
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
 ################################################
@@ -239,7 +244,7 @@ if(CATKIN_ENABLE_TESTING)
   ## Add gtest based cpp test target and link libraries.
   add_library(t${PROJECT_NAME} ${executable_sources})
   target_include_directories(t${PROJECT_NAME} PUBLIC "include")
-  target_link_libraries(t${PROJECT_NAME} ${catkin_LIBRARIES} Threads::Threads)
+  target_link_libraries(t${PROJECT_NAME} ${catkin_LIBRARIES} Threads::Threads ntcore wpiutil)
   add_dependencies(t${PROJECT_NAME} ${PROJECT_NAME} ${t${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
   catkin_add_gtest(${PROJECT_NAME}-test ${test_sources})
