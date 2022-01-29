@@ -1,0 +1,7 @@
+# Inputs
+string table_name
+string entry_name
+float64[] default_value
+---
+# Outputs
+float64[] output

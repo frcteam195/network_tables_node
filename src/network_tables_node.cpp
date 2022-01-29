@@ -1,11 +1,15 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "networktables/NetworkTable.h"
+#include "networktables/NetworkTableInstance.h"
 
 #include <thread>
 #include <string>
 #include <mutex>
 
 ros::NodeHandle* node;
+
+nt::NetworkTableInstance networkTableInst;
 
 int main(int argc, char **argv)
 {
@@ -25,6 +29,7 @@ int main(int argc, char **argv)
 
 	node = &n;
 
+	networkTableInst = nt::NetworkTableInstance::GetDefault();
 	ros::spin();
 	return 0;
 }

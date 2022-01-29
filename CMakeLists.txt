@@ -72,6 +72,24 @@ find_package(catkin REQUIRED COMPONENTS roscpp std_msgs message_generation rio_c
 #   std_msgs  # Or other packages containing msgs
 # )
 
+add_service_files(
+  FILES
+  NTGetDouble.srv
+  NTGetDoubleArray.srv
+  NTGetBool.srv
+  NTGetBoolArray.srv
+  NTGetString.srv
+  NTGetStringArray.srv
+  NTGetRaw.srv
+  NTSetDouble.srv
+  NTSetDoubleArray.srv
+  NTSetBool.srv
+  NTSetBoolArray.srv
+  NTSetString.srv
+  NTSetStringArray.srv
+  NTSetRaw.srv
+)
+
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
 ################################################
@@ -199,6 +217,7 @@ message("CATKIN INCLUDES:${catkin_INCLUDE_DIRS}")
 # catkin_add_nosetests(test)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
+find_package(wpilib REQUIRED)
 
 file(GLOB_RECURSE executable_sources CONFIGURE_DEPENDS
      "${PROJECT_SOURCE_DIR}/src/*.cpp"
@@ -210,7 +229,7 @@ file(GLOB_RECURSE test_sources CONFIGURE_DEPENDS
 
 add_executable(${PROJECT_NAME} ${executable_sources})
 target_include_directories(${PROJECT_NAME} PUBLIC "include")
-target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} Threads::Threads)
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} Threads::Threads ntcore wpiutil)
 add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 #############

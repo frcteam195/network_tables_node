@@ -1,0 +1,7 @@
+# Inputs
+string table_name
+string entry_name
+bool[] default_value
+---
+# Outputs
+bool[] output
