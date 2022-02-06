@@ -167,7 +167,8 @@ int main(int argc, char **argv)
 	ros::ServiceServer service_setstringarray = node->advertiseService("nt_setstringarray", nt_setstringarray);
 	ros::ServiceServer service_setraw = node->advertiseService("nt_setraw", nt_setraw);
 
-	networkTableInst = nt::NetworkTableInstance::GetDefault();
+	networkTableInst = nt::NetworkTableInstance::Create();
+	networkTableInst.StartClientTeam(195);
 	ros::spin();
 	return 0;
 }
