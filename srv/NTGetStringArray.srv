@@ -5,3 +5,4 @@ string[] default_value
 ---
 # Outputs
 string[] output
+time last_valid

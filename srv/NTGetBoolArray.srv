@@ -5,3 +5,4 @@ bool[] default_value
 ---
 # Outputs
 bool[] output
+time last_valid

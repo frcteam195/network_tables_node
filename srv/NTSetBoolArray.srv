@@ -5,3 +5,4 @@ bool[] value
 ---
 # Outputs
 bool success
+time last_valid

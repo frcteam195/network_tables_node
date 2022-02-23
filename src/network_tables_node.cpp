@@ -23,14 +23,30 @@
 #include <string>
 #include <mutex>
 #include <vector>
+#include <map>
 
 ros::NodeHandle* node;
 
 nt::NetworkTableInstance networkTableInst;
+std::map<std::string, uint64_t> mPrevNTTimestampMap;
+std::map<std::string, ros::Time> mROSTimestampMap;
+
+ros::Time processTimestamp(std::string tableName, std::string entryName)
+{
+	std::string nt_key = tableName + entryName;
+	uint64_t currTime = networkTableInst.GetTable(tableName)->GetEntry(entryName).GetLastChange();
+	if (currTime != mPrevNTTimestampMap[nt_key])
+	{
+		mPrevNTTimestampMap[nt_key] = currTime;
+		mROSTimestampMap[nt_key] = ros::Time::now();
+	}
+	return mROSTimestampMap[nt_key];
+}
 
 bool nt_getbool(network_tables_node::NTGetBool::Request &request, network_tables_node::NTGetBool::Response &response)
 {
 	response.output = networkTableInst.GetTable(request.table_name)->GetEntry(request.entry_name).GetBoolean(request.default_value);
+	response.last_valid = processTimestamp(request.table_name, request.entry_name);
 	return true;
 }
 
@@ -46,38 +62,46 @@ bool nt_getboolarray(network_tables_node::NTGetBoolArray::Request &request, netw
 	{
 		response.output.push_back(resp[i]);
 	}
+
+	response.last_valid = processTimestamp(request.table_name, request.entry_name);
 	return true;
 }
 
 bool nt_getdouble(network_tables_node::NTGetDouble::Request &request, network_tables_node::NTGetDouble::Response &response)
 {
 	response.output = networkTableInst.GetTable(request.table_name)->GetEntry(request.entry_name).GetDouble(request.default_value);
+	response.last_valid = processTimestamp(request.table_name, request.entry_name);
 	return true;
 }
 
 bool nt_getdoublearray(network_tables_node::NTGetDoubleArray::Request &request, network_tables_node::NTGetDoubleArray::Response &response)
 {
 	response.output = networkTableInst.GetTable(request.table_name)->GetEntry(request.entry_name).GetDoubleArray(request.default_value);
+	response.last_valid = processTimestamp(request.table_name, request.entry_name);
 	return true;
 }
 
 bool nt_getstring(network_tables_node::NTGetString::Request &request, network_tables_node::NTGetString::Response &response)
 {
 	response.output = networkTableInst.GetTable(request.table_name)->GetEntry(request.entry_name).GetString(request.default_value);
+	response.last_valid = processTimestamp(request.table_name, request.entry_name);
 	return true;
 }
 
 bool nt_getstringarray(network_tables_node::NTGetStringArray::Request &request, network_tables_node::NTGetStringArray::Response &response)
 {
 	response.output = networkTableInst.GetTable(request.table_name)->GetEntry(request.entry_name).GetStringArray(request.default_value);
+	response.last_valid = processTimestamp(request.table_name, request.entry_name);
 	return true;
 }
 
 bool nt_getraw(network_tables_node::NTGetRaw::Request &request, network_tables_node::NTGetRaw::Response &response)
 {
 	response.output = networkTableInst.GetTable(request.table_name)->GetEntry(request.entry_name).GetRaw(request.default_value);
+	response.last_valid = processTimestamp(request.table_name, request.entry_name);
 	return true;
 }
+
 
 
 

@@ -5,3 +5,4 @@ float64 default_value
 ---
 # Outputs
 float64 output
+time last_valid
