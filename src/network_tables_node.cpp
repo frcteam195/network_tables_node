@@ -23,6 +23,8 @@
 #include <string>
 #include <mutex>
 #include <vector>
+#include <iostream>
+#include <sstream>
 #include <map>
 
 ros::NodeHandle* node;
@@ -35,10 +37,20 @@ ros::Time processTimestamp(std::string tableName, std::string entryName)
 {
 	std::string nt_key = tableName + entryName;
 	uint64_t currTime = networkTableInst.GetTable(tableName)->GetEntry(entryName).GetLastChange();
-	if (currTime != mPrevNTTimestampMap[nt_key])
+	std::stringstream ss;
+	ss << "Rob TEST " << entryName << " : " << currTime;
+	if (entryName == "tv")
 	{
-		mPrevNTTimestampMap[nt_key] = currTime;
-		mROSTimestampMap[nt_key] = ros::Time::now();
+		ROS_INFO("%s", ss.str().c_str());
+		if (currTime != mPrevNTTimestampMap[nt_key])
+		{
+			ROS_INFO("Updating?");
+			mPrevNTTimestampMap[nt_key] = currTime;
+			mROSTimestampMap[nt_key] = ros::Time::now();
+		}
+		std::stringstream rr;;
+		rr << "Test 2: " << mROSTimestampMap[nt_key] << " :: " << nt_key;
+		ROS_INFO("%s", rr.str().c_str());
 	}
 	return mROSTimestampMap[nt_key];
 }
