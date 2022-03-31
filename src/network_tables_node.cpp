@@ -1,3 +1,5 @@
+#include "network_tables_node.hpp"
+
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "networktables/NetworkTable.h"
@@ -18,6 +20,8 @@
 #include "network_tables_node/NTSetString.h"
 #include "network_tables_node/NTSetStringArray.h"
 #include "network_tables_node/NTSetRaw.h"
+
+#include "ParameterHelper.hpp"
 
 #include <thread>
 #include <string>
@@ -177,6 +181,22 @@ int main(int argc, char **argv)
 
 	node = &n;
 
+	bool required_params_found = true;
+	required_params_found &= n.getParam(CKSP(is_robot), is_robot);
+	if (required_params_found && !is_robot)
+	{
+		required_params_found &= n.getParam(CKSP(local_server_ip), local_server_ip);
+	}
+	else
+	{
+		required_params_found &= n.getParam(CKSP(team_number), team_number);
+	}
+	if (!required_params_found)
+	{
+		ROS_ERROR("Missing required parameters for node %s. Please check the list and make sure all required parameters are included", ros::this_node::getName().c_str());
+		return 1;
+	}
+
 	ros::ServiceServer service_getbool = node->advertiseService("nt_getbool", nt_getbool);
 	ros::ServiceServer service_getboolarray = node->advertiseService("nt_getboolarray", nt_getboolarray);
 	ros::ServiceServer service_getdouble = node->advertiseService("nt_getdouble", nt_getdouble);
@@ -194,7 +214,14 @@ int main(int argc, char **argv)
 	ros::ServiceServer service_setraw = node->advertiseService("nt_setraw", nt_setraw);
 
 	networkTableInst = nt::NetworkTableInstance::Create();
-	networkTableInst.StartClientTeam(195);
+	if (is_robot)
+	{
+		networkTableInst.StartClientTeam(team_number);
+	}
+	else
+	{
+		networkTableInst.StartClient(local_server_ip.c_str());
+	}
 	ros::spin();
 	return 0;
 }
